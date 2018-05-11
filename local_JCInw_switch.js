@@ -42,14 +42,14 @@ var generateToken= function() {
             "data": "",
             "message": ""
         }
-/*        var proxyOpts = url.parse('http://10.10.5.18:8080')
+        var proxyOpts = url.parse('http://10.10.5.18:8080')
         proxyOpts.auth = 'cups:SAIbaba@786'
-        var proxy = new HttpsProxyAgent(proxyOpts)*/    
+        var proxy = new HttpsProxyAgent(proxyOpts)    
         var options = {
                     host: 'use1-wap.tplinkcloud.com',
                     method: 'POST',
-                    headers: headers
-                    //agent: proxy         
+                    headers: headers,
+                    agent: proxy         
         }
         var body = JSON.stringify({
                 "method": "login",
@@ -97,15 +97,15 @@ var getState= function(token) {
             "data": "",
             "token": ""
         }
-/*        var proxyOpts = url.parse('http://10.10.5.18:8080')
+        var proxyOpts = url.parse('http://10.10.5.18:8080')
         proxyOpts.auth = 'cups:SAIbaba@786'
-        var proxy = new HttpsProxyAgent(proxyOpts) */ 
+        var proxy = new HttpsProxyAgent(proxyOpts)  
         var options = {
                     host: 'use1-wap.tplinkcloud.com',
                     method: 'POST',
                     headers: headers,
-                    path: '/?token='+token
-                //    agent: proxy         
+                    path: '/?token='+token,
+                    agent: proxy         
         }
         var body = JSON.stringify({
                 "method": "passthrough",
@@ -146,15 +146,15 @@ var turnOff= function(token) {
         var headers = {
             'Content-Type':'application/json'
         }
-/*        var proxyOpts = url.parse('http://10.10.5.18:8080')
+        var proxyOpts = url.parse('http://10.10.5.18:8080')
         proxyOpts.auth = 'cups:SAIbaba@786'
-        var proxy = new HttpsProxyAgent(proxyOpts)  */
+        var proxy = new HttpsProxyAgent(proxyOpts)  
         var options = {
                     host: 'use1-wap.tplinkcloud.com',
                     method: 'POST',
                     headers: headers,
-                    path: '/?token='+token
-                //    agent: proxy         
+                    path: '/?token='+token,
+                    agent: proxy         
         }
         var body = JSON.stringify({
                 "method": "passthrough",
@@ -193,15 +193,15 @@ var turnOn= function(token) {
         var headers = {
             'Content-Type':'application/json'
         }
-/*        var proxyOpts = url.parse('http://10.10.5.18:8080')
+        var proxyOpts = url.parse('http://10.10.5.18:8080')
         proxyOpts.auth = 'cups:SAIbaba@786'
-        var proxy = new HttpsProxyAgent(proxyOpts)  */ 
+        var proxy = new HttpsProxyAgent(proxyOpts)   
         var options = {
                     host: 'use1-wap.tplinkcloud.com',
                     method: 'POST',
                     headers: headers,
-                    path: '/?token='+token
-                //    agent: proxy         
+                    path: '/?token='+token,
+                    agent: proxy         
         }
         var body = JSON.stringify({
                 "method": "passthrough",
