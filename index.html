@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> IOT Photo Booth </title>
+ 
+  <!-- Bootstrap CSS -->
+  <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+ 
+  <style type="text/css">
+  #stream {
+    height: 99%;
+    margin: 0px auto;
+    display: block;
+    margin-top: 20px;
+  }
+    .Table
+    {
+        display: table;
+    }
+    .Title
+    {
+        display: table-caption;
+        text-align: center;
+        font-weight: bold;
+        font-size: larger;
+    }
+    .Heading
+    {
+        display: table-row;
+        font-weight: bold;
+        text-align: center;
+    }
+    .Row
+    {
+        display: table-row;
+    }
+    .Cell
+    {
+        display: table-cell;
+        border: solid;
+        border-width: thin;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+  </style>
+ 
+  <!-- jQuery -->
+  <script src="http://code.jquery.com/jquery.js"></script>
+  <!-- Bootstrap JavaScript -->
+  <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  <!--<script src="/socket.io/socket.io.js"></script>-->
+  <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+  <script>
+  var origin = window.location.origin;
+  var socket = io.connect(origin);
+  socket.on('server_connection', function(data) {
+        socket.emit('join', 'Hello from client');
+    });
+  socket.on('ai_response', function(data) {
+        //socket.emit('join', 'Hello from client');
+		console.log("Response from server: "+ JSON.stringify(data))
+		document.getElementById("results").innerHTML = JSON.stringify(data);
+    });
+    socket.on('TPH', function(data) {
+        //socket.emit('join', 'Hello from client');
+		console.log("Response from server: "+ JSON.stringify(data))
+		document.getElementById("tph").innerHTML = JSON.stringify(data);
+    });
+  function takesnap() {
+    console.log("Client Side Emit for Take Snap")
+    socket.emit('take-snap');
+    $('.start').hide();
+  }
+  $(window).unload(function(){
+	socket.emit('disconnect', 'I am disconnecting');
+  });
+  </script>
+</head>
+ 
+<body class="container">
+  <h1 class="text-center">IOT Photo Booth
+    <small>Powered by PI</small>
+  </h1>
+ 
+  <hr>
+ 
+  <button type="button" id="" class="btn btn-info picture" onclick="takesnap()">Take a photo</button>
+  <!--<img src="/images/currentpic.jpg" id="stream">-->
+ 
+  <div class="row">
+    <img src="/images/currentpic.jpg" id="stream">
+  </div>
+  
+  <div id="results">
+  </div>
+  
+ <!-- <div id="tph">
+  </div> -->
+  
+  <div class="Table">
+    <div class="Heading">
+        <div class="Cell">
+            <p>HVAC Readings</p>
+        </div>
+    </div>
+    <div class="Row">
+        <div class="Cell" id="tph">
+            <p>Row 1 Column 1</p>
+        </div>
+    </div>
+</div>
+ 
+</body>
+ 
+</html>
