@@ -36,15 +36,15 @@ var getTPH = function () {
 
   return new Promise((resolve, reject) =>{
           //console.log('In Get TPH Block');
-          var data = IMU.getValueSync();
+          //var data = IMU.getValueSync();
           //var data = {"temperature": "90.000", "pressure": "90.000", "humidity": "90.000"}
-          globalTPH.temperature=tuc.c2f(data.temperature.toFixed(0))
+         /* globalTPH.temperature=tuc.c2f(data.temperature.toFixed(0))
           globalTPH.pressure=data.pressure.toFixed(0)
-          globalTPH.humidity=data.humidity.toFixed(0)
+          globalTPH.humidity=data.humidity.toFixed(0)*/
 
-          //globalTPH.temperature= "71";
-          //globalTPH.pressure="70";
-          //globalTPH.humidity="22";
+          globalTPH.temperature= "75";
+          globalTPH.pressure="70";
+          globalTPH.humidity="22";
           console.log("tph deviceId: " + globalTPH.deviceId);
           console.log("tph temperature: " + globalTPH.temperature);
           console.log("tph pressure: " + globalTPH.pressure);

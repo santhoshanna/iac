@@ -5,75 +5,107 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title> IOT Photo Booth </title>
- 
+  <title> Intelligent Ambiance in the Cloud </title> 
   <!-- Bootstrap CSS -->
-  <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
- 
-  <style type="text/css">
-  #stream {
-    height: 99%;
-    margin: 0px auto;
-    display: block;
-    margin-top: 20px;
-  }
-    .Table
-    {
-        display: table;
-    }
-    .Title
-    {
-        display: table-caption;
-        text-align: center;
-        font-weight: bold;
-        font-size: larger;
-    }
-    .Heading
-    {
-        display: table-row;
-        font-weight: bold;
-        text-align: center;
-    }
-    .Row
-    {
-        display: table-row;
-    }
-    .Cell
-    {
-        display: table-cell;
-        border: solid;
-        border-width: thin;
-        padding-left: 5px;
-        padding-right: 5px;
-    }
-  </style>
- 
+  <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"> 
+  <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"> 
   <!-- jQuery -->
   <script src="http://code.jquery.com/jquery.js"></script>
   <!-- Bootstrap JavaScript -->
   <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
   <!--<script src="/socket.io/socket.io.js"></script>-->
   <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.js"></script>
+  <style>
+  .loading-image {
+	display:block;
+	margin: 0 auto;
+    }
+   .modal {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 ) 
+                url('/images/giphy.gif') 
+                50% 50% 
+                no-repeat;
+    }
+  </style>
   <script>
+  
   var origin = window.location.origin;
+  $(window).load(function() {  
+       $('#loader_img').hide(); 
+  })
   var socket = io.connect(origin);
+  var dbParam,myObj,txt = "";
+  var obj,senparam,txtsensor,imagetxt = "";
+
   socket.on('server_connection', function(data) {
         socket.emit('join', 'Hello from client');
     });
+  //obj = { "table":"customers", "limit":20 };
   socket.on('ai_response', function(data) {
-        //socket.emit('join', 'Hello from client');
-		console.log("Response from server: "+ JSON.stringify(data))
-		document.getElementById("results").innerHTML = JSON.stringify(data);
+    //socket.emit('join', 'Hello from client');		
+	setTimeout(load, 100); //this delay will allow browser to load complete image
+    function load() 
+    {
+	   	document.getElementById("imageStream").innerHTML="<p align=\"center\" style=\"margin-top:20px\"><img id=\"main_img\" src='/images/currentpic.jpg' /></p>"
+		$('#loader_img').fadeOut(100);
+    }
+    console.log("Response from server: "+ JSON.stringify(data))
+    //document.getElementById("results_1").innerHTML = JSON.stringify(data);
+    dbParam = JSON.stringify(data);
+	txt = ""
+    txt += "<table class='table'>";
+    txt += "<tr><th>AI Data</th><th></th></tr>";    
+    myObj = JSON.parse(dbParam);    
+    txt += "<tr><td> Name </td>";
+    txt += "<td >" + myObj.name + "</td></tr>";
+    txt += "<tr><td> Emotion Dedected </td>";
+    txt += "<td>" + myObj.emotionKey + "</td></tr>";
+    txt += "<tr><td> Emotion value </td>";
+    txt += "<td>" + myObj.emotionValue + "</td></tr>";
+    txt += "<tr><td> suggestedTemperature </td>";
+    txt += "<td>" + myObj.suggestedTemperature + "</td></tr>";
+    txt += "<tr><td> currentTemperature </td>";
+    txt += "<td>" + myObj.currentTemperature + "</td></tr>";
+    txt += "<tr><td> A/C Status </td>";
+    txt += "<td>" + myObj.hvacStatus + "(" + myObj.hvacMessage +  ")</td></tr>";
+    //txt += "<tr><td>" + dbParam.emotionKey + "</td></tr>";
+    txt += "</table>";
+    document.getElementById("results").innerHTML = txt;
     });
-    socket.on('TPH', function(data) {
-        //socket.emit('join', 'Hello from client');
-		console.log("Response from server: "+ JSON.stringify(data))
-		document.getElementById("tph").innerHTML = JSON.stringify(data);
+  socket.on('TPH', function(data) {
+    //socket.emit('join', 'Hello from client');
+	console.log("Response from server: "+ JSON.stringify(data))
+    //document.getElementById("tph").innerHTML = JSON.stringify(data);
+    obj =  JSON.stringify(data);
+	txtsensor = ""
+    txtsensor += "<table class='table'>";
+    txtsensor += "<tr><th>Device Sensor Data</th><th></th></tr>";
+    senparam = JSON.parse(obj);
+    txtsensor += "<tr><td> Device Name </td>";
+    txtsensor += "<td >" + senparam.deviceId + "</td></tr>";
+    txtsensor += "<tr><td> Environment Temperature </td>";
+    txtsensor += "<td >" + senparam.temperature + "</td></tr>";
+    txtsensor += "<tr><td> Environment Humidity </td>";
+    txtsensor += "<td >" + senparam.humidity + "</td></tr>";
+    txtsensor += "<tr><td> Environment Pressure </td>";
+    txtsensor += "<td >" + senparam.pressure + "</td></tr>";
+    txtsensor += "</table>";
+    document.getElementById("tph").innerHTML = txtsensor;
     });
   function takesnap() {
-    console.log("Client Side Emit for Take Snap")
+   console.log("Client Side Emit for Take Snap")
     socket.emit('take-snap');
-    $('.start').hide();
+    //$('.start').hide();
+	$('#loader_img').show();
   }
   $(window).unload(function(){
 	socket.emit('disconnect', 'I am disconnecting');
@@ -82,26 +114,21 @@
 </head>
  
 <body class="container">
-  <h1 class="text-center">IOT Photo Booth
-    <small>Powered by PI</small>
+  <h1 class="text-center">Intelligent Ambiance in the Cloud
+    <small>Powered by Inno Explorer</small>
   </h1>
  
   <hr>
  
-  <button type="button" id="" class="btn btn-info picture" onclick="takesnap()">Take a photo</button>
-  <!--<img src="/images/currentpic.jpg" id="stream">-->
- 
-  <div class="row">
-    <img src="/images/currentpic.jpg" id="stream">
-  </div>
+  <button type="button" id="" class="btn btn-info picture" style="margin-left: 50%" onclick="takesnap()">Take a photo</button>
+  <!--<img src="/images/currentpic.jpg" id="stream">--> 
+  <div class="row" id="imageStream"></div>
+  <!-- <img src="/images/giphy.gif" class="modal" id="loader_img"> -->
+  <img class="modal" id="loader_img">
   
-  <div id="results">
-  </div>
-  
- <!-- <div id="tph">
-  </div> -->
-  
-  <div class="Table">
+  <p id="results"></p>
+  <p id="tph"></p>
+   <!-- <div class="Table">
     <div class="Heading">
         <div class="Cell">
             <p>HVAC Readings</p>
@@ -112,7 +139,7 @@
             <p>Row 1 Column 1</p>
         </div>
     </div>
-</div>
+</div> -->
  
 </body>
  
