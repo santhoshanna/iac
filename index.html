@@ -105,6 +105,7 @@
    console.log("Client Side Emit for Take Snap")
     socket.emit('take-snap');
     //$('.start').hide();
+	document.getElementById("imageStream").innerHTML=""
 	$('#loader_img').show();
   }
   $(window).unload(function(){
@@ -120,7 +121,8 @@
  
   <hr>
  
-  <button type="button" id="" class="btn btn-info picture" style="margin-left: 50%" onclick="takesnap()">Take a photo</button>
+  <button type="button" id="" class="btn btn-info picture" onclick="takesnap()">Take a photo</button>
+  <!--<button type="button" id="" class="btn btn-info picture" style="margin-left: 50%" onclick="takesnap()">Take a photo</button>-->
   <!--<img src="/images/currentpic.jpg" id="stream">--> 
   <div class="row" id="imageStream"></div>
   <!-- <img src="/images/giphy.gif" class="modal" id="loader_img"> -->
@@ -128,18 +130,6 @@
   
   <p id="results"></p>
   <p id="tph"></p>
-   <!-- <div class="Table">
-    <div class="Heading">
-        <div class="Cell">
-            <p>HVAC Readings</p>
-        </div>
-    </div>
-    <div class="Row">
-        <div class="Cell" id="tph">
-            <p>Row 1 Column 1</p>
-        </div>
-    </div>
-</div> -->
  
 </body>
  

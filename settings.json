@@ -34,4 +34,76 @@
     	"humidity":"37"
     }
 ]
+},{
+	"name": "Santosh",
+    "settings": [{
+    	"emotion":"neutral",
+    	"temperature":"70",
+    	"humidity":"30"
+    },{
+    	"emotion":"anger",
+    	"temperature":"71",
+    	"humidity":"31"
+    },{
+    	"emotion":"contempt",
+    	"temperature":"72",
+    	"humidity":"32"
+    },{
+    	"emotion":"disgust",
+    	"temperature":"73",
+    	"humidity":"33"
+    },{
+    	"emotion":"fear",
+    	"temperature":"74",
+    	"humidity":"34"
+    },{
+    	"emotion":"happiness",
+    	"temperature":"75",
+    	"humidity":"35"
+    },{
+    	"emotion":"sadness",
+    	"temperature":"76",
+    	"humidity":"36"
+    },{
+    	"emotion":"surprise",
+    	"temperature":"77",
+    	"humidity":"37"
+    }
+]
+},{
+	"name": "Joe",
+    "settings": [{
+    	"emotion":"neutral",
+    	"temperature":"70",
+    	"humidity":"30"
+    },{
+    	"emotion":"anger",
+    	"temperature":"71",
+    	"humidity":"31"
+    },{
+    	"emotion":"contempt",
+    	"temperature":"72",
+    	"humidity":"32"
+    },{
+    	"emotion":"disgust",
+    	"temperature":"73",
+    	"humidity":"33"
+    },{
+    	"emotion":"fear",
+    	"temperature":"74",
+    	"humidity":"34"
+    },{
+    	"emotion":"happiness",
+    	"temperature":"75",
+    	"humidity":"35"
+    },{
+    	"emotion":"sadness",
+    	"temperature":"76",
+    	"humidity":"36"
+    },{
+    	"emotion":"surprise",
+    	"temperature":"77",
+    	"humidity":"37"
+    }
+]
 }]
