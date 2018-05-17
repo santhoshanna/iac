@@ -7,7 +7,8 @@ var globalTPH = {
           "deviceId": "BS-Raspberry-pi",
           "temperarature": "",
           "pressure": "",
-          "humidity": ""
+          "humidity": "",
+          "iotHubMessageStatus": ""
    }
 
 var Mqtt = require('azure-iot-device-mqtt').Mqtt
@@ -17,34 +18,38 @@ var client = DeviceClient.fromConnectionString(connectionString, Mqtt)
 
 var printResultFor = function (op) {
     return function printResult(err, res) {
-          if (err) console.log(op + ' error: ' + err.toString());
-          if (res) console.log(op + ' status: ' + res.constructor.name);
+          if (err) {
+            console.log(op + ' error: ' + err.toString())
+            globalTPH.iotHubMessageStatus = "Telemetry Message was not sent due to server error"
+          }
+          if (res) {
+            console.log(op + ' status: ' + res.constructor.name)
+            globalTPH.iotHubMessageStatus = "Telemetry Message Sent"
+          }
     }
-  }
-setInterval(function(){
-          var temperature = globalTPH.temperature
-          var humidity = globalTPH.humidity
-          var pressure = globalTPH.pressure
-          var deviceId = globalTPH.deviceId
-          var data = JSON.stringify({ deviceId:deviceId, temperature: temperature, humidity: humidity, pressure:pressure });
-          var message = new Message(data);
-          message.properties.add('temperatureAlert', (temperature > 30) ? 'true' : 'false');
-          console.log('Sending message: ' + message.getData());
-          client.sendEvent(message, printResultFor('send'));
-}, 6000)
+  } 
 
 var getTPH = function () {
 
   return new Promise((resolve, reject) =>{
           //console.log('In Get TPH Block');
-          var data = IMU.getValueSync();
+          var data = IMU.getValueSync()
           globalTPH.temperature=tuc.c2f(data.temperature.toFixed(0))
           globalTPH.pressure=data.pressure.toFixed(0)
           globalTPH.humidity=data.humidity.toFixed(0)
           console.log("tph deviceId: " + globalTPH.deviceId);
-          console.log("tph temperature: " + globalTPH.temperature);
-          console.log("tph pressure: " + globalTPH.pressure);
-          console.log("tph humidity: " + globalTPH.humidity);
+          console.log("tph temperature: " + globalTPH.temperature)
+          console.log("tph pressure: " + globalTPH.pressure)
+          console.log("tph humidity: " + globalTPH.humidity)
+          var temperature = globalTPH.temperature
+          var humidity = globalTPH.humidity
+          var pressure = globalTPH.pressure
+          var deviceId = globalTPH.deviceId
+          var data = JSON.stringify({ deviceId:deviceId, temperature: temperature, humidity: humidity, pressure:pressure })
+          var message = new Message(data)
+          message.properties.add('temperatureAlert', (temperature > 30) ? 'true' : 'false')
+          console.log('Sending message: ' + message.getData())
+          client.sendEvent(message, printResultFor('send'))
           resolve(globalTPH)
   }).catch((error)=>{
           exit(`Completed with error ${JSON.stringify(error)}`)

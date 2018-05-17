@@ -72,9 +72,9 @@
     txt += "<tr><td> Emotion value </td>";
     txt += "<td>" + myObj.emotionValue + "</td></tr>";
     txt += "<tr><td> suggestedTemperature </td>";
-    txt += "<td>" + myObj.suggestedTemperature + "</td></tr>";
+    txt += "<td>" + parseInt(myObj.suggestedTemperature) + " F"+ "</td></tr>";
     txt += "<tr><td> currentTemperature </td>";
-    txt += "<td>" + myObj.currentTemperature + "</td></tr>";
+    txt += "<td>" + parseInt(myObj.currentTemperature) + " F"+ "</td></tr>";
     txt += "<tr><td> A/C Status </td>";
     txt += "<td>" + myObj.hvacStatus + "(" + myObj.hvacMessage +  ")</td></tr>";
     //txt += "<tr><td>" + dbParam.emotionKey + "</td></tr>";
@@ -92,12 +92,14 @@
     senparam = JSON.parse(obj);
     txtsensor += "<tr><td> Device Name </td>";
     txtsensor += "<td >" + senparam.deviceId + "</td></tr>";
-    txtsensor += "<tr><td> Environment Temperature </td>";
-    txtsensor += "<td >" + senparam.temperature + "</td></tr>";
+    txtsensor += "<tr><td> Environment Temperature (Fahrenheit) </td>";
+    txtsensor += "<td >" + parseInt(senparam.temperature) + " F"+ "</td></tr>";
     txtsensor += "<tr><td> Environment Humidity </td>";
-    txtsensor += "<td >" + senparam.humidity + "</td></tr>";
+    txtsensor += "<td >" + parseInt(senparam.humidity) + "</td></tr>";
     txtsensor += "<tr><td> Environment Pressure </td>";
-    txtsensor += "<td >" + senparam.pressure + "</td></tr>";
+    txtsensor += "<td >" + parseInt(senparam.pressure) + " Pi"+ "</td></tr>";
+    txtsensor += "<tr><td> Telemetry Status </td>";
+    txtsensor += "<td >" + senparam.iotHubMessageStatus + "</td></tr>";	
     txtsensor += "</table>";
     document.getElementById("tph").innerHTML = txtsensor;
     });
@@ -106,6 +108,8 @@
     socket.emit('take-snap');
     //$('.start').hide();
 	document.getElementById("imageStream").innerHTML=""
+	txt = ""
+	txtsensor = ""
 	$('#loader_img').show();
   }
   $(window).unload(function(){

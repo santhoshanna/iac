@@ -114,7 +114,7 @@ app.route('/image').get(function(req, res) {
 					data.currentTemperature = response.temperature
 					data.currentPressure = response.pressure
 					data.currentHumidity = response.humidity
-					if(parseInt(data.currentTemperature) > parseInt(data.suggestedTemperature)){
+								if(parseInt(data.currentTemperature) > parseInt(data.suggestedTemperature)){
 									var token
 									switchJS.generateToken().then((response)=>{
 										    token = JSON.parse(response.data).result.token
@@ -141,7 +141,7 @@ app.route('/image').get(function(req, res) {
 											console.log(error)
 									    	res.status(500).send("Internal Server Error")
 									})
-					}else {
+								}else if (parseInt(data.currentTemperature) = parseInt(data.suggestedTemperature)){
 									console.log("No change in temperature")
 									var token
 									switchJS.generateToken().then((response)=>{
@@ -154,19 +154,44 @@ app.route('/image').get(function(req, res) {
 								            if(responseDataObj.system.get_sysinfo.relay_state === 0){
 								            	data.hvacStatus = "Off"
 												data.hvacMessage = "HVAC is currently off"
-												res.status(200).send(data)
-								            	//return switchJS.turnOn(responseState.token)
+												socket.emit( "ai_response",data)
 								            }else {
 								            	console.log('Since switch was on, it was turned off')
 								            	data.hvacStatus = "On"
 												data.hvacMessage = "HVAC is currently on"
-												res.status(200).send(data)
+												socket.emit( "ai_response",data)
 								            }
 										}).catch((error)=>{
 											console.log(error)
-									    	res.status(500).send("Internal Server Error")
+											socket.emit( "ai_response",error)
 									})
-					}
+								}else if (parseInt(data.currentTemperature) < parseInt(data.suggestedTemperature)){
+									console.log("Current temo less that the one suggested for user")
+									var token
+									switchJS.generateToken().then((response)=>{
+									token = JSON.parse(response.data).result.token
+									return switchJS.getState(JSON.parse(response.data).result.token)
+										}).then((responseState)=>{
+                                            var obj = JSON.parse(responseState.data)
+                                            var responseDataObj = JSON.parse(obj.result.responseData)
+                                            console.log("Response System: " + responseDataObj.system.get_sysinfo.relay_state + "\n")
+                                            if(responseDataObj.system.get_sysinfo.relay_state === 0){
+                                                console.log('Since switch was off, it will remian off')
+                                                data.hvacStatus = "Off"
+                                                data.hvacMessage = "Since switch was off, it will remian off"
+                                                socket.emit( "ai_response",data)
+                                            }else {
+                                                console.log('Since switch was on, it was turned off')
+                                                data.hvacStatus = "On"
+                                                data.hvacMessage = "Since switch was on, it was turned off"
+                                                return switchJS.turnOff(responseState.token)
+                                                socket.emit( "ai_response",data)
+								            }
+								        }).catch((error)=>{
+											console.log(error)
+											socket.emit( "ai_response",error)
+									})
+								}
 				}).catch((error)=>{
 					console.log("Failed to get TPH data: "+ error)
 				})
@@ -419,13 +444,13 @@ io.on('connection', function(socket) {
 														socket.emit( "ai_response",error)
 												})
 
-								}else {
-											console.log("No change in temperature")
-											var token
-											switchJS.generateToken().then((response)=>{
-											token = JSON.parse(response.data).result.token
-											return switchJS.getState(JSON.parse(response.data).result.token)})
-												.then((responseState)=>{
+											}else if (parseInt(data.currentTemperature) = parseInt(data.suggestedTemperature)){
+												console.log("No change in temperature")
+												var token
+												switchJS.generateToken().then((response)=>{
+												token = JSON.parse(response.data).result.token
+												return switchJS.getState(JSON.parse(response.data).result.token)
+													}).then((responseState)=>{
 													    var obj = JSON.parse(responseState.data)
 											            var responseDataObj = JSON.parse(obj.result.responseData)
 											            console.log("Response System: " + responseDataObj.system.get_sysinfo.relay_state + "\n")
@@ -438,12 +463,38 @@ io.on('connection', function(socket) {
 											            	data.hvacStatus = "On"
 															data.hvacMessage = "HVAC is currently on"
 															socket.emit( "ai_response",data)
-											            }})
-												.catch((error)=>{
+											            }
+													}).catch((error)=>{
 														console.log(error)
 														socket.emit( "ai_response",error)
 												})
-								}
+											}else if (parseInt(data.currentTemperature) < parseInt(data.suggestedTemperature)){
+												console.log("Current temo less that the one suggested for user")
+												var token
+												switchJS.generateToken().then((response)=>{
+												token = JSON.parse(response.data).result.token
+												return switchJS.getState(JSON.parse(response.data).result.token)
+													}).then((responseState)=>{
+			                                            var obj = JSON.parse(responseState.data)
+			                                            var responseDataObj = JSON.parse(obj.result.responseData)
+			                                            console.log("Response System: " + responseDataObj.system.get_sysinfo.relay_state + "\n")
+			                                            if(responseDataObj.system.get_sysinfo.relay_state === 0){
+			                                                console.log('Since switch was off, it will remian off')
+			                                                data.hvacStatus = "Off"
+			                                                data.hvacMessage = "Since switch was off, it will remian off"
+			                                                socket.emit( "ai_response",data)
+			                                            }else {
+			                                                console.log('Since switch was on, it was turned off')
+			                                                data.hvacStatus = "On"
+			                                                data.hvacMessage = "Since switch was on, it was turned off"
+			                                                return switchJS.turnOff(responseState.token)
+			                                                socket.emit( "ai_response",data)
+											            }
+											        }).catch((error)=>{
+														console.log(error)
+														socket.emit( "ai_response",error)
+												})
+											}
 						}).catch((error)=>{
 								console.log("Failed to get TPH data: "+ error)
 						})

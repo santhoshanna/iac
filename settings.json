@@ -2,7 +2,7 @@
 	"name": "Bharath",
     "settings": [{
     	"emotion":"neutral",
-    	"temperature":"70",
+    	"temperature":"69",
     	"humidity":"30"
     },{
     	"emotion":"anger",
@@ -71,7 +71,7 @@
     }
 ]
 },{
-	"name": "Joe",
+	"name": "Joe Morris",
     "settings": [{
     	"emotion":"neutral",
     	"temperature":"70",
